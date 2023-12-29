@@ -29,7 +29,7 @@ If your package manager cannot find `bpftrace`, please see [bpftrace Package Ins
 Here is an easy way to download the latest version of the `net-proc-watch` script and install it in `/usr/local/bin/`:
 
 ```sh
-curl -o /usr/local/bin/net-proc-watch "https://github.com/pixlcore/net-proc-watch/blob/main/net-proc-watch.pl"
+curl -o /usr/local/bin/net-proc-watch "https://raw.githubusercontent.com/pixlcore/net-proc-watch/main/net-proc-watch.pl"
 chmod 775 /usr/local/bin/net-proc-watch
 ```
 
