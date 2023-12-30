@@ -13,6 +13,9 @@ use JSON;
 
 $| = 1;
 
+# make sure we are root
+if ($< != 0) { die("Error: Must be root to use this tool.\n"); }
+
 # parse command-line args
 my $format = '';
 GetOptions( "format=s" => \$format );
