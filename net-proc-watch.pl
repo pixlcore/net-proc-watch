@@ -13,10 +13,10 @@ use JSON;
 
 $| = 1;
 
-# make sure we are root
+# Make sure we are root
 if ($< != 0) { die("Error: Must be root to use this tool.\n"); }
 
-# parse command-line args
+# Parse command-line args
 my $format = '';
 GetOptions( "format=s" => \$format );
 
@@ -120,25 +120,25 @@ sub process_close {
 	my ($id_frag, $pid, $cmd, $tx, $rx) = ($1, $2, $3, $4, $5);
 	my $full_id = undef;
 	
-	# locate full socket ID using fragment (bpftrace only gives us a few hex chars in printf(%x) mode)
+	# Locate full socket ID using fragment (bpftrace only gives us a few hex chars in printf(%x) mode)
 	foreach my $id (keys %$conns) {
 		if ($id =~ /$id_frag$/) { $full_id = $id; last; }
 	}
 	if ($full_id) {
-		# found, mark socket as closed
+		# Found, mark socket as closed
 		$conns->{$full_id}->{closed} = 1;
 	}
 	else {
-		# not found, create new stub, so it is accounted for in next tick report (short-lived socket)
+		# Not found, create new stub, so it is accounted for in next tick report (short-lived socket)
 		$conns->{$id_frag} = { pid => $pid, cmd => $cmd, old_tx => 0, tx => $tx, old_rx => 0, rx => $rx, closed => 1 };
 	}
 }
 
 sub tick {
-	# generate report every tick (second)
+	# Generate report every tick (second)
 	my $procs = {};
 	
-	# aggregate conns by proc and calc tx/rx deltas
+	# Aggregate conns by proc and calc tx/rx deltas
 	foreach my $id (keys %$conns) {
 		my $conn = $conns->{$id};
 		next unless $conn->{pid} && $conn->{cmd};
@@ -149,7 +149,7 @@ sub tick {
 		if ($conn->{rx}) { $proc->{rx_sec} += ($conn->{rx} - $conn->{old_rx}); }
 	}
 	
-	# print in human-readable or JSON format
+	# Output in human-readable or JSON format
 	if ($format eq 'json') {
 		print $json->encode($procs) . "\n";
 	}
@@ -161,7 +161,7 @@ sub tick {
 		}
 	}
 	
-	# prune closed sockets
+	# Prune closed sockets
 	foreach my $id (keys %$conns) {
 		if ($conns->{$id}->{closed}) { delete $conns->{$id}; }
 	}
